@@ -39,6 +39,7 @@
         <div class="link-wrappper max-h-[300px] overflow-y-auto" v-else>
           <LinkDetailComponent
             v-for="(link, index) in links"
+            :key="link.platform"
             :link="link"
             :index="index"
             @removeLink="removeLink(index)"
@@ -68,7 +69,7 @@ const selectedOption = ref("");
 const removeLink = (index: number) => {
   numberOfLinks.value -= 1;
   devlinks.removeLink(index);
-  addToast("Remove data from tab", "success");
+  addToast("Removed link from tab", "success");
 };
 const addLink = () => {
   numberOfLinks.value += 1;
@@ -79,7 +80,7 @@ const addLink = () => {
     textColor: "",
     icon: "",
   });
-  addToast("Add data to tab", "success");
+  addToast("Added data to tab", "success");
 };
 const updateOption = (option: LinkOptions, index: number) => {
   selectedOption.value = option.value;
@@ -99,4 +100,16 @@ const updateLink = (value: string, index: number) => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-purple-secondary rounded-xl;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-light-gray-secondary rounded-xl;
+}
+</style>

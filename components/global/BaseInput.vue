@@ -1,8 +1,12 @@
 <template>
-  <div class="relative border-none outline-none bg-transparent" >
-    <label v-if="labelText" class="text-sm" :for="labelText">{{
-      labelText
-    }}</label>
+  <div class="relative border-none outline-none bg-transparent">
+    <label
+      v-if="labelText"
+      class="text-sm"
+      :for="labelText"
+      :class="{ 'star': asterix }"
+      >{{ labelText }}</label
+    >
     <div>
       <input
         :value="modelValue"
@@ -43,6 +47,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  asterix: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const input = ref<HTMLInputElement | null>(null);
@@ -72,5 +80,9 @@ input[type="number"] {
 }
 input[type="file"] {
   display: none;
+}
+.star:after {
+  content: " *";
+  color: inherit;
 }
 </style>

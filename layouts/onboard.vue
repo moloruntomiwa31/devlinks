@@ -15,6 +15,7 @@
       <div class="space-x-4">
         <NuxtLink
           v-for="link in links"
+          :key="link.name"
           :to="link.url"
           class="rounded-lg text-purple-secondary p-2 hover:bg-light-gray-secondary font-bold cursor-pointer"
         >
@@ -27,11 +28,16 @@
           buttonText="Preview"
           buttonColor="bg-white"
           class="border border-purple-secondary rounded-lg text-purple-secondary p-2 hover:bg-light-gray-secondary"
+          @click="
+            router.push({
+              path: `/preview/${user.userId}`,
+              query: { user: user.userId },
+            })
+          "
         />
       </div>
     </div>
     <!-- BODY -->
-    <Toast v-show="toast.showToast" @close="toast.showToast = false" />
     <div class="body w-full flex items-center gap-6 py-4 min-h-[88vh]">
       <div class="relative w-2/5 bg-white rounded-lg h-[560px] hidden lg:block">
         <img src="~/assets/images/phone-frame.png" alt="phone-frame" />
@@ -52,6 +58,7 @@
 <script setup lang="ts">
 import type Link from "~/types/Link";
 
+const router = useRouter();
 const links = ref<Link[]>([
   {
     name: "Links",
@@ -64,7 +71,6 @@ const links = ref<Link[]>([
     iconName: "gg:profile",
   },
 ]);
-const toast = useToast();
 const user = useUser();
 </script>
 

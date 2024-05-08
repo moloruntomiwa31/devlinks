@@ -35,7 +35,7 @@
         <BaseButton
           buttonText="Create an account"
           buttonColor="bg-purple-secondary"
-          @click="navigateTo('/login')"
+          @click="navigateTo('/dashboard/links')"
           class="text-white p-2 bg-purple-secondary rounded-lg hover:bg-purple-primary hover:text-dark-gray-secondary w-full"
         />
       </Form>

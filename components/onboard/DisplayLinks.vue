@@ -8,13 +8,17 @@
       class="mb-4"
       v-if="links.length < 1"
     />
-    <div v-else class="grid gap-2">
+    <div
+      v-else
+      class="grid overflow-y-auto mt-2"
+      :style="{ 'max-height': containerHeight }"
+    >
       <div
-        class="w-[150px] h-[30px] rounded-[2px] flex items-center p-4"
+        class="w-[150px] h-[30px] rounded-[2px] flex items-center p-4 mt-1"
         v-for="link in links"
         :style="{ backgroundColor: link.bgColor }"
       >
-        <Icon :name="link.icon" :color="link.textColor"/>
+        <Icon :name="link.icon" :color="link.textColor" />
         <a
           :href="link.link"
           target="_blank"
@@ -30,6 +34,16 @@
 <script setup lang="ts">
 const devlinks = useDevLinks();
 const { links } = storeToRefs(devlinks);
+defineProps({
+  containerHeight: {
+    type: String,
+    default: "150px",
+  },
+});
 </script>
 
-<style scoped></style>
+<style scoped>
+::-webkit-scrollbar {
+  display: none;
+}
+</style>

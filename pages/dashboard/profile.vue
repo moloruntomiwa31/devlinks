@@ -2,8 +2,7 @@
   <main class="w-full lg:w-3/5 bg-white md:h-[560px] rounded-lg p-4">
     <TabLayout
       title="Profile Details"
-      description="Add your details to create a personal touch to your profile."
-    >
+      description="Add your details to create a personal touch to your profile.">
       <template #body>
         <div
           class="profile-header mt-4 h-[200px] bg-light-gray-primary w-full p-4 rounded-lg flex flex-col md:flex-row md:items-center justify-between"
@@ -12,12 +11,7 @@
           <div
             :class="{ 'text-white': user.image }"
             class="uploader cursor-pointer flexCenter flex-col text-purple-secondary bg-light-gray-secondary p-6 rounded-lg h-[150px] w-fit bg-contain"
-            :style="{
-              backgroundImage: user.image
-                ? `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${user.image})`
-                : '',
-            }"
-          >
+            :style="{backgroundImage: user.image ? `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${user.image})`: '',}">
             <Icon name="ph:image-bold" size="36px" />
             <BaseInput
               type="file"
@@ -35,25 +29,13 @@
 
         <Form class="bg-light-gray-primary rounded-lg p-4 my-2 md:h-[200px]">
           <BaseInput
-            labelText="First Name"
-            placeholder="e.g John"
-            type="text"
+            v-for="i in inputfields"
+            :labelText="i.label"
+            :placeholder="i.placeholder"
+            :type="i.type"
+            :asterix="true"
             class="grid md:grid-cols-2 mb-2"
-            v-model.trim="first_name"
-          />
-          <BaseInput
-            labelText="Last Name"
-            placeholder="e.g Applessed"
-            type="text"
-            class="grid md:grid-cols-2 mb-2"
-            v-model.trim="last_name"
-          />
-          <BaseInput
-            labelText="Email"
-            placeholder="e.g email@example.com"
-            type="email"
-            class="grid md:grid-cols-2 mb-2"
-            v-model.trim="email"
+            v-model.trim="i.value"
           />
         </Form>
       </template>
@@ -90,6 +72,27 @@ const handleImageUpload = (event: Event) => {
     reader.readAsDataURL(file);
   }
 };
+
+const inputfields = ref([
+  {
+    label: "First name",
+    placeholder: "e.g John",
+    type: "text",
+    value: first_name,
+  },
+  {
+    label: "Last name",
+    placeholder: "e.g Doe",
+    type: "text",
+    value: last_name,
+  },
+  {
+    label: "Email",
+    placeholder: "e.g example@gmail.com",
+    type: "email",
+    value: email,
+  },
+]);
 </script>
 
 <style scoped></style>

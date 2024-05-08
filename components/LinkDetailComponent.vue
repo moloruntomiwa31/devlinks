@@ -10,7 +10,7 @@
       <BaseButton
         buttonText="Remove"
         buttonColor="bg-white"
-        @click="removeLink(index)"
+        @click="removeLink"
         class="p-2 rounded-lg text-dark-gray-secondary hover:text-purple-secondary"
       />
     </div>
@@ -43,12 +43,12 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "removeLink", value: number): void;
+  (e: "removeLink"): void;
   (e: "updateLink", value: string): void;
   (e: "updateOption", value: LinkOptions): void;
 }>();
-const removeLink = (index: number) => {
-  emit("removeLink", index);
+const removeLink = () => {
+  emit("removeLink");
 };
 //datas and functions
 const selectedOption = ref(props.link.platform);
@@ -151,7 +151,7 @@ const linkOptions = ref<LinkOptions[]>([
     value: "stackoverflow",
     text: "Stack Overflow",
     icon: "mdi:stackoverflow",
-    bgColor: "#FFAF45",
+    bgColor: "#F97300",
     textColor: "#fff",
   },
 ]);

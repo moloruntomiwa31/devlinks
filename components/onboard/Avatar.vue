@@ -11,13 +11,24 @@
       v-else
       :src="user.image"
       alt="User-Image"
-      class="w-[80px] h-[80px] rounded-full border-2 border-purple-secondary p-1"
+      class="rounded-full border-2 border-purple-secondary"
+      :style="{ 'height': height, 'width': width }"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 const user = useUser();
+defineProps({
+  height: {
+    type: String,
+    default: "80px",
+  },
+  width: {
+    type: String,
+    default: "80px",
+  },
+});
 </script>
 
 <style scoped></style>
