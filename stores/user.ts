@@ -1,11 +1,14 @@
 import type User from "~/types/User";
+import { v4 as uuidv4 } from 'uuid';
+// import { supabase } from "~/supabase";
 
 export const useUser = defineStore("useUser", () => {
+  const user = ref(null);
   const first_name = ref<string>("");
   const last_name = ref<string>("");
   const email = ref<string>("");
   const image = ref<string>("");
-  const userId = useId();
+  const userId = uuidv4();
   const isProfileComplete = computed(() => {
     return (
       first_name.value.length > 0 &&
@@ -13,7 +16,7 @@ export const useUser = defineStore("useUser", () => {
       email.value.length > 0
     );
   });
-  const user = computed<User>(() => {
+  const userProfileDetails = computed<User>(() => {
     return {
       first_name: first_name.value,
       last_name: last_name.value,
@@ -22,15 +25,19 @@ export const useUser = defineStore("useUser", () => {
       id: userId,
     };
   });
-  //   const setUser = (newUser: User) => {
-  //     user.value = newUser;
-  //   };
+  const setUser = (newUser: any) => {
+    user.value = newUser;
+  };
+  // supabase.auth.onAuthStateChange((event, session) => {
+  //   console.log(event, session)
+  // })
   //   const clearUser = () => {
   //     user.value = null;
   //   };
   return {
+    userProfileDetails,
     user,
-    // setUser,
+    setUser,
     // clearUser,
     userId,
     image,

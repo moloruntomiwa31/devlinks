@@ -10,7 +10,7 @@
       >
         <Icon :name="toast.icon" size="24px" :color="toast.bgColor" />
       </div>
-      <div class="ms-3 text-sm font-normal text-white-primary">
+      <div class="ms-3 text-sm font-normal text-white-primary text-center">
         {{ toast.toastText }}
       </div>
       <button

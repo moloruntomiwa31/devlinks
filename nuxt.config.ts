@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     dirs: ["stores", "composables", "types"],
   },
   modules: ["nuxt-icon", "@pinia/nuxt"],
+  // plugins: ["~/plugins/supabase.ts"],
   postcss: {
     plugins: {
       tailwindcss: {},

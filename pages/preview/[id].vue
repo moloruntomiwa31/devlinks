@@ -36,6 +36,10 @@ const router = useRouter();
 const route = useRoute();
 const toast = useToast();
 const { addToast } = toast;
+
+definePageMeta({
+  middleware: ["auth-user"],
+});
 //functions
 const copyLink = async () => {
   try {

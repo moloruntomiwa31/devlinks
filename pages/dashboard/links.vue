@@ -15,11 +15,11 @@
         <!-- DISPLAY IF NO DEVLINKS YET -->
         <div
           class="get-started bg-light-gray-primary rounded-lg w-full flexCenter flex-col mt-4 py-4"
-          v-if="numberOfLinks === 0"
+          v-if="links.length === 0"
         >
           <div class="image w-full flexCenter">
             <img
-              src="~/assets/images/link-sharing-image.png"
+              src="~/assets/images/link-image.png"
               alt="Link Sharing Image"
               class="w-1/3"
             />
@@ -57,6 +57,7 @@ import type LinkOptions from "~/types/LinkOptions";
 
 definePageMeta({
   layout: "onboard",
+  middleware: ["auth-user"],
 });
 const devlinks = useDevLinks();
 const toast = useToast();

@@ -30,8 +30,8 @@
           class="border border-purple-secondary rounded-lg text-purple-secondary p-2 hover:bg-light-gray-secondary"
           @click="
             router.push({
-              path: `/preview/${user.userId}`,
-              query: { user: user.userId },
+              path: `/preview/${userStore.userId}`,
+              query: { user: userStore.user.id },
             })
           "
         />
@@ -71,7 +71,7 @@ const links = ref<Link[]>([
     iconName: "gg:profile",
   },
 ]);
-const user = useUser();
+const userStore = useUser();
 </script>
 
 <style scoped>

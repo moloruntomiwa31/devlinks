@@ -8,27 +8,28 @@
         title="Login"
         details="Add your details below to get back into the app."
       />
-      <Form class="mt-4">
+      <Form class="mt-4" @submit="handleLogIn">
         <BaseInput
-          v-model="email"
-          labelText="Email address"
-          inputType="email"
-          placeholder="Enter your email"
+          v-for="field in inputFields"
+          :key="field.label"
+          v-model="field.value"
+          :labelText="field.label"
+          :inputType="field.type"
+          :placeholder="field.placeholder"
+          :eye="field.eye"
+          :errorMessage="field.error.length > 0"
           class="mb-4"
         />
-        <BaseInput
-          v-model="password"
-          labelText="Password"
-          inputType="password"
-          placeholder="At least 8 characters long"
-          :eye="true"
-          class="mb-4"
-        />
+        <div class="mb-4">
+          <span v-for="error in errors" class="text-red-secondary">{{
+            error.error
+          }}</span>
+        </div>
         <BaseButton
           buttonText="Login"
           buttonColor="bg-purple-secondary"
-          @click="navigateTo('/dashboard/links')"
           class="text-white p-2 bg-purple-secondary rounded-lg hover:bg-purple-primary hover:text-dark-gray-secondary w-full"
+          :rotate="isLoggingIn"
         />
       </Form>
       <p class="text-center mt-4 text-dark-gray-primary">
@@ -42,8 +43,65 @@
 </template>
 
 <script setup lang="ts">
-const email = ref<string>("");
-const password = ref<string>("");
+const { isValidEmail } = useValidations();
+const { logIn } = useAuth();
+const isLoggingIn = ref(false);
+
+const inputFields = ref([
+  {
+    label: "Email",
+    placeholder: "e.g example@gmail.com",
+    type: "email",
+    value: "",
+    error: "",
+  },
+  {
+    label: "Password",
+    placeholder: "At least 8 characters long",
+    type: "password",
+    eye: true,
+    value: "",
+    error: "",
+  },
+]);
+
+const errors = computed(() => inputFields.value.filter((field) => field.error));
+
+const formInvalid = computed(() => {
+  watch(inputFields, () => {
+    return errors.value.length > 0;
+  });
+});
+
+const handleLogIn = async () => {
+  isLoggingIn.value = true;
+  // Clear previous errors
+  inputFields.value.forEach((field) => (field.error = ""));
+
+  // Validate email
+  const emailField = inputFields.value.find((field) => field.type === "email");
+  if (!isValidEmail(emailField!.value)) {
+    emailField!.error = "Invalid email";
+    return;
+  }
+
+  // Validate password length
+  const passwordField = inputFields.value.find(
+    (field) => field.type === "password"
+  );
+  if (passwordField!.value.length < 8) {
+    passwordField!.error = "Password must be at least 8 characters long";
+    return;
+  }
+
+  await logIn(inputFields.value[0].value, inputFields.value[1].value);
+  isLoggingIn.value = false;
+  resetForm();
+};
+
+const resetForm = () => {
+  inputFields.value.forEach((field) => (field.value = ""));
+};
 </script>
 
 <style scoped></style>

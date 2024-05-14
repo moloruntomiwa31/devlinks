@@ -6,7 +6,11 @@
     class="duration-200 font-bold outline-none"
     :disabled="disabled"
   >
-    <Icon :name="iconName" v-if="iconName" />
+    <Icon
+      :name="rotate ? 'gg:spinner-two' : iconName"
+      :class="{ 'rotate': rotate }"
+      v-if="iconName"
+    />
     <span class="ml-1">{{ buttonText }}</span>
   </button>
 </template>
@@ -23,6 +27,10 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  rotate: {
+    type: Boolean,
+    default: false,
+  },
 });
 const emit = defineEmits<{
   (e: "click"): void;
@@ -35,5 +43,8 @@ const click = () => {
 <style scoped>
 .disabled {
   @apply cursor-not-allowed bg-light-gray-secondary text-white;
+}
+.rotate {
+  @apply animate-spin;
 }
 </style>
