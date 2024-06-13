@@ -9,7 +9,7 @@
     <Icon
       :name="rotate ? 'gg:spinner-two' : iconName"
       :class="{ 'rotate': rotate }"
-      v-if="iconName"
+      v-if="rotate || iconName"
     />
     <span class="ml-1">{{ buttonText }}</span>
   </button>

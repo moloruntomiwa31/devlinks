@@ -67,7 +67,7 @@ let errors = ref<any>([]);
 const isRegistering = ref(false);
 //validations
 
-const handleSignUp = () => {
+const handleSignUp = async () => {
   isRegistering.value = true;
   //validations
   if (!isValidEmail(emailAddress.value)) {
@@ -78,7 +78,7 @@ const handleSignUp = () => {
     return false;
   }
   //setup
-  signUp(emailAddress.value, password.value);
+  await signUp(emailAddress.value, password.value);
   isRegistering.value = false;
   emailAddress.value = "";
   password.value = "";

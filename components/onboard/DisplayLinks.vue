@@ -2,7 +2,7 @@
   <div>
     <AnimatedPlaceholder
       height="30px"
-      width="150px"
+      :width="placeholderWidth"
       borderRadius="2px"
       v-for="i in 4"
       class="mb-4"
@@ -36,6 +36,10 @@ const devlinks = useDevLinks();
 const { links } = storeToRefs(devlinks);
 defineProps({
   containerHeight: {
+    type: String,
+    default: "150px",
+  },
+  placeholderWidth: {
     type: String,
     default: "150px",
   },

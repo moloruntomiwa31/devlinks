@@ -2,8 +2,7 @@
   <main class="w-full lg:w-3/5 bg-white md:h-[560px] rounded-lg p-4">
     <TabLayout
       title="Customize your links"
-      description="Add/edit/remove links below and then share all your profiles with the world!"
-    >
+      description="Add/edit/remove links below and then share all your profiles with the world!">
       <template #body>
         <BaseButton
           @click="addLink"
@@ -46,6 +45,7 @@
             @updateOption="updateOption($event, index)"
             @updateLink="updateLink($event, index)"
           />
+          <BaseButton @click="useDevLinks().fetchLinks" buttonText="Fetch"/>
         </div>
       </template>
     </TabLayout>

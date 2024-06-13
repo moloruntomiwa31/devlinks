@@ -38,11 +38,13 @@
       </div>
     </div>
     <!-- BODY -->
-    <div class="body w-full flex items-center gap-6 py-4 min-h-[88vh]">
+    <div
+      class="body w-full flex items-center justify-center gap-6 py-4 min-h-[88vh]"
+    >
       <div class="relative w-2/5 bg-white rounded-lg h-[560px] hidden lg:block">
         <img src="~/assets/images/phone-frame.png" alt="phone-frame" />
         <div
-          class="skeleton-loader flexCenter flex-col absolute top-[90px] left-[170px]"
+          class="skeleton-loader flexCenter flex-col absolute left-[120px] top-[70px] xl:top-[90px] xl:left-[175px]"
         >
           <OnboardAvatar />
           <OnboardUserDetails />
