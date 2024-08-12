@@ -10,7 +10,7 @@
     <div>
       <input
         :value="modelValue"
-        :type="inputType"
+        :type="currentInputType"
         :placeholder="placeholder"
         v-bind="$attrs"
         ref="input"
@@ -23,11 +23,11 @@
         }"
       />
       <Icon
-        name="mingcute:eye-2-fill"
+        :name="eyeIcon"
         v-if="eye"
         size="24px"
         class="absolute right-6 top-[2.2rem] cursor-pointer z-50"
-        @click="changeInputType"
+        @click="toggleInputType"
       />
     </div>
   </div>
@@ -64,9 +64,19 @@ const props = defineProps({
 const input = ref<HTMLInputElement | null>(null);
 const modelValue = defineModel<string>();
 
-const changeInputType = () => {
-  input.value!.type = input.value!.type === "password" ? "text" : "password";
+const closedEye = "mdi:eye-off-outline";
+const openEye = "mingcute:eye-2-fill";
+
+const currentInputType = ref(props.inputType);
+
+const eyeIcon = computed(() => {
+  return currentInputType.value === "password" ? closedEye : openEye;
+});
+
+const toggleInputType = () => {
+  currentInputType.value = currentInputType.value === "password" ? "text" : "password";
 };
+
 const inputClasses = computed(() => {
   if (props.inputType === "checkbox") {
     return "h-4 w-4 bg-red-primary p-2 border-none outline-none focus:outline-none";

@@ -1,36 +1,46 @@
-import { supabase } from "~/supabase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { getAuth } from "firebase/auth";
+import {app} from "~/firebaseInit";
 
 export default function useAuth() {
   const { setUser } = useUser();
   const { addToast } = useToast();
+  const auth = getAuth(app);
 
   const logIn = async (email: string, password: string) => {
-    let { data, error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
-    if (error) {
-      addToast(error.message, "error");
-      return;
-    }
+    try {
+      let response = await signInWithEmailAndPassword(auth, email, password);
 
-    addToast("Logged in successfully.", "success");
-    setUser(data.user);
-    navigateTo("/dashboard/links");
+      if (response.user) {
+        addToast("Logged in successfully.", "success");
+        setUser(response.user);
+        navigateTo("/dashboard/links");
+      }
+    } catch (error) {
+      addToast("Invalid email or password", "error");
+    }
   };
 
   const signUp = async (email: string, password: string) => {
-    let { data, error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
-    if (error) {
-      addToast(error.message, "error");
-      return;
-    }
+    try {
+      let response = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-    addToast("Verification link has been sent to your email.", "success");
-    setUser(data.user);
+      if (response.user) {
+        addToast("User successfully created", "success");
+        setUser(response.user);
+        navigateTo("/dashboard/links");
+      }
+    } catch (error) {
+      addToast("Error occured", "error");
+    }
   };
+    
   return { logIn, signUp };
 }

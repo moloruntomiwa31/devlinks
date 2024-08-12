@@ -37,9 +37,8 @@ const route = useRoute();
 const toast = useToast();
 const { addToast } = toast;
 
-definePageMeta({
-  middleware: ["auth-user"],
-});
+// definePageMeta({
+// });
 //functions
 const copyLink = async () => {
   try {

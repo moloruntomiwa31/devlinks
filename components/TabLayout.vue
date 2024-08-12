@@ -20,7 +20,7 @@
 const devLinks = useDevLinks();
 const user = useUser();
 const isDisabled = computed(() => {
-  return devLinks.numberOfLinks === 0 || !user.isProfileComplete;
+  return !user.isProfileComplete;
 });
 defineProps<{
   title: string;

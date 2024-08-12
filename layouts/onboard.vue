@@ -31,7 +31,7 @@
           @click="
             router.push({
               path: `/preview/${userStore.userId}`,
-              query: { user: userStore.user.id },
+              query: { user: userStore.user.uid },
             })
           "
         />
@@ -44,7 +44,7 @@
       <div class="relative w-2/5 bg-white rounded-lg h-[560px] hidden lg:block">
         <img src="~/assets/images/phone-frame.png" alt="phone-frame" />
         <div
-          class="skeleton-loader flexCenter flex-col absolute left-[120px] top-[70px] xl:top-[90px] xl:left-[175px]"
+          class="skeleton-loader flexCenter flex-col absolute left-1/2 bottom-[47%] transform -translate-x-1/2 "
         >
           <OnboardAvatar />
           <OnboardUserDetails />
@@ -79,5 +79,8 @@ const userStore = useUser();
 <style scoped>
 .router-link-active {
   background-color: #d9d9d9;
+}
+.skeleton-loader {
+  width: 100%;
 }
 </style>

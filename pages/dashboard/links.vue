@@ -2,7 +2,9 @@
   <main class="w-full lg:w-3/5 bg-white md:h-[560px] rounded-lg p-4">
     <TabLayout
       title="Customize your links"
-      description="Add/edit/remove links below and then share all your profiles with the world!">
+      description="Add/edit/remove links below and then share all your profiles with the world!"
+      @handleSave="handleSave"  
+    >
       <template #body>
         <BaseButton
           @click="addLink"
@@ -36,16 +38,18 @@
 
         <!-- DISPLAY IF DEVLINKS AVAILABLE -->
         <div class="link-wrappper max-h-[300px] overflow-y-auto" v-else>
-          <LinkDetailComponent
-            v-for="(link, index) in links"
-            :key="link.platform"
-            :link="link"
-            :index="index"
-            @removeLink="removeLink(index)"
-            @updateOption="updateOption($event, index)"
-            @updateLink="updateLink($event, index)"
-          />
-          <BaseButton @click="useDevLinks().fetchLinks" buttonText="Fetch"/>
+          <draggable v-model="links" itemKey="id" @end="handleDragEnd">
+            <template #item="{ element, index }">
+              <LinkDetailComponent
+                :key="element.id"
+                :link="element"
+                :index="index"
+                @removeLink="removeLink(index)"
+                @updateOption="updateOption($event, index)"
+                @updateLink="updateLink($event, index)"
+              />
+            </template>
+          </draggable>
         </div>
       </template>
     </TabLayout>
@@ -54,26 +58,24 @@
 
 <script setup lang="ts">
 import type LinkOptions from "~/types/LinkOptions";
+import draggable from "vuedraggable";
 
 definePageMeta({
   layout: "onboard",
-  middleware: ["auth-user"],
 });
 const devlinks = useDevLinks();
 const toast = useToast();
 const { addToast } = toast;
-const { links, numberOfLinks } = storeToRefs(devlinks);
+const { links } = storeToRefs(devlinks);
 
 const inputedLink = ref("");
 const selectedOption = ref("");
 
 const removeLink = (index: number) => {
-  numberOfLinks.value -= 1;
   devlinks.removeLink(index);
   addToast("Removed link from tab", "success");
 };
 const addLink = () => {
-  numberOfLinks.value += 1;
   devlinks.addLink({
     platform: selectedOption.value,
     link: inputedLink.value,
@@ -83,21 +85,34 @@ const addLink = () => {
   });
   addToast("Added data to tab", "success");
 };
-const updateOption = (option: LinkOptions, index: number) => {
+const updateOption = async (option: LinkOptions, index: number) => {
   selectedOption.value = option.value;
-  devlinks.updateLink(index, {
+  const updatedLink = {
     ...links.value[index],
     platform: option.value,
     bgColor: option.bgColor,
     textColor: option.textColor,
     icon: option.icon,
-  });
+  };
+    
+  await devlinks.updateLink(index, updatedLink); // Call the store method
   selectedOption.value = "";
 };
-const updateLink = (value: string, index: number) => {
+const updateLink = async (value: string, index: number) => {
   inputedLink.value = value;
-  devlinks.updateLink(index, { ...links.value[index], link: value });
+  const updatedLink = { ...links.value[index], link: value };
+  await devlinks.updateLink(index, updatedLink); // Call the store method
   inputedLink.value = "";
+};
+
+const handleDragEnd = async () => {
+  await devlinks.updateLinkOrder(links.value);
+  addToast("Reordered links", "success");
+};
+
+const handleSave = () => {
+  devlinks.setupRealtimeListener();
+  addToast("Saved data to tab", "success");
 };
 </script>
 

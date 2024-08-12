@@ -3,6 +3,7 @@
     <TabLayout
       title="Profile Details"
       description="Add your details to create a personal touch to your profile."
+      @handleSave="handleSave"
     >
       <template #body>
         <div
@@ -50,33 +51,90 @@
 </template>
 
 <script setup lang="ts">
+import {
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL,
+  getStorage,
+  deleteObject,
+} from "firebase/storage";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "../../firebaseInit";
+
+const storage = getStorage();
 definePageMeta({
   layout: "onboard",
-  middleware: ["auth-user"]
 });
 const user = useUser();
 const toast = useToast();
 const { first_name, last_name, email } = storeToRefs(user);
 const { addToast } = toast;
 
-const handleImageUpload = (event: Event) => {
+const handleImageUpload = async (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.item(0);
   if (file) {
     const reader = new FileReader();
 
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       const img = new Image();
-      img.onload = function () {
+      img.onload = async function () {
         const imageIsNotPerfect = computed(
           () => this.width > 1024 || this.height > 1024
         );
-        imageIsNotPerfect.value
-          ? addToast("Image dimensions must be less than 1024x1024px", "error")
-          : (user.image = (e.target as FileReader).result as string);
+        if (imageIsNotPerfect.value) {
+          addToast("Image dimensions must be less than 1024x1024px", "error");
+        } else {
+          if (user.image) {
+            const oldImageRef = storageRef(storage, user.image);
+            await deleteObject(oldImageRef).catch((error) => {
+              console.error("Error deleting old image:", error);
+            });
+          }
+
+          // Use user ID to create a unique file name
+          const userId = user.user.uid; // Assuming user.id is the unique identifier
+          const fileExtension = file.name.split(".").pop();
+          const uniqueFileName = `${userId}.${fileExtension}`;
+
+          // Upload the new image
+          const storageReference = storageRef(
+            storage,
+            `images/${uniqueFileName}`
+          );
+          await uploadBytes(storageReference, file);
+          const downloadURL = await getDownloadURL(storageReference);
+          user.image = downloadURL;
+        }
       };
       img.src = URL.createObjectURL(file);
     };
     reader.readAsDataURL(file);
+  }
+};
+
+const handleSave = async () => {
+  try {
+    const userId = user.user.uid; // Assuming user.id is the unique identifier
+    console.log(userId);
+    
+    const userDocRef = doc(db, "users", userId); // Reference to the user document in Firestore
+
+    // Update the user document in Firestore
+    await setDoc(userDocRef, {
+      first_name: first_name.value,
+      last_name: last_name.value,
+      email: email.value,
+      image: user.image,
+    }, { merge: true }); 
+
+    // Reflect the changes in the local user object
+    user.first_name = first_name.value;
+    user.last_name = last_name.value;
+    user.email = email.value;
+    addToast("Profile updated successfully", "success");
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    addToast("Error updating profile", "error");
   }
 };
 
@@ -100,6 +158,27 @@ const inputfields = ref([
     value: email,
   },
 ]);
+
+onMounted(async () => {
+  const userId = user.user.uid; // Assuming user.id is the unique identifier
+  const userDocRef = doc(db, "users", userId);
+  const userDoc = await getDoc(userDocRef);
+  if (userDoc.exists()) {
+    const userData = userDoc.data();
+    if (userData.image) {
+      user.image = userData.image;
+    }
+    if (userData.first_name) {
+      user.first_name = userData.first_name;
+    }
+    if (userData.last_name) {
+      user.last_name = userData.last_name;
+    }
+    if (userData.email) {
+      user.email = userData.email;
+    }
+  }
+});
 </script>
 
 <style scoped></style>
