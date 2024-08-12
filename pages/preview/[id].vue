@@ -33,12 +33,9 @@
 
 <script setup lang="ts">
 const router = useRouter();
-const route = useRoute();
 const toast = useToast();
 const { addToast } = toast;
 
-// definePageMeta({
-// });
 //functions
 const copyLink = async () => {
   try {
@@ -48,10 +45,6 @@ const copyLink = async () => {
     addToast("Failed to copy link: ", "error");
   }
 };
-//hooks
-onMounted(() => {
-  console.log(route.query.user);
-});
 </script>
 
 <style scoped></style>

@@ -38,9 +38,7 @@
 
         <!-- DISPLAY IF DEVLINKS AVAILABLE -->
         <div class="link-wrappper max-h-[300px] overflow-y-auto" v-else>
-          <draggable v-model="links" itemKey="id" @end="handleDragEnd">
-            <template #item="{ element, index }">
-              <LinkDetailComponent
+              <LinkDetailComponent v-for="(element, index) in links"
                 :key="element.id"
                 :link="element"
                 :index="index"
@@ -48,8 +46,6 @@
                 @updateOption="updateOption($event, index)"
                 @updateLink="updateLink($event, index)"
               />
-            </template>
-          </draggable>
         </div>
       </template>
     </TabLayout>
@@ -58,7 +54,6 @@
 
 <script setup lang="ts">
 import type LinkOptions from "~/types/LinkOptions";
-import draggable from "vuedraggable";
 
 definePageMeta({
   layout: "onboard",
@@ -103,11 +98,6 @@ const updateLink = async (value: string, index: number) => {
   const updatedLink = { ...links.value[index], link: value };
   await devlinks.updateLink(index, updatedLink); // Call the store method
   inputedLink.value = "";
-};
-
-const handleDragEnd = async () => {
-  await devlinks.updateLinkOrder(links.value);
-  addToast("Reordered links", "success");
 };
 
 const handleSave = () => {
