@@ -71,12 +71,12 @@ const { links } = storeToRefs(devlinks);
 const inputedLink = ref("");
 const selectedOption = ref("");
 
-const removeLink = (index: number) => {
-  devlinks.removeLink(index);
+const removeLink = async (index: number) => {
+  await devlinks.removeLink(index);
   addToast("Removed link from tab", "success");
 };
-const addLink = () => {
-  devlinks.addLink({
+const addLink = async () => {
+  await devlinks.addLink({
     platform: selectedOption.value,
     link: inputedLink.value,
     bgColor: "",

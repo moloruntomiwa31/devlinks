@@ -42,9 +42,9 @@
       class="body w-full flex items-center justify-center gap-6 py-4 min-h-[88vh]"
     >
       <div class="relative w-2/5 bg-white rounded-lg h-[560px] hidden lg:block">
-        <img src="~/assets/images/phone-frame.png" alt="phone-frame" />
+        <img src="~/assets/images/phone-frame.png" alt="phone-frame" class="w-full h-full object-cover" />
         <div
-          class="skeleton-loader flexCenter flex-col absolute left-1/2 bottom-[47%] transform -translate-x-1/2 "
+          class="skeleton-loader flexCenter flex-col absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2  overflow-y-auto max-h-full"
         >
           <OnboardAvatar />
           <OnboardUserDetails />

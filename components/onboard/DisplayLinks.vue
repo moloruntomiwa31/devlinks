@@ -14,7 +14,7 @@
       :style="{ 'max-height': containerHeight }"
     >
       <div
-        class="w-[100px] h-[30px] rounded-[2px] flex items-center p-4 mt-1"
+        class="w-[150px] h-[30px] rounded-[2px] flex items-center p-4 mt-1"
         v-for="link in links"
         :style="{ backgroundColor: link.bgColor }"
       >
@@ -41,13 +41,21 @@ defineProps({
   },
   placeholderWidth: {
     type: String,
-    default: "100px",
+    default: "150px",
   },
 });
 </script>
 
 <style scoped>
 ::-webkit-scrollbar {
-  display: none;
+  width: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-purple-secondary rounded-xl;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-light-gray-secondary rounded-xl;
 }
 </style>
