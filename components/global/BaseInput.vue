@@ -30,6 +30,9 @@
         @click="toggleInputType"
       />
     </div>
+    <p v-if="errorMessage" class="text-red-500 text-sm text-red-secondary">
+      {{ errorMessage }}
+    </p>
   </div>
 </template>
 
@@ -56,7 +59,7 @@ const props = defineProps({
     default: false,
   },
   errorMessage: {
-    type: [Array, Boolean],
+    type: [Array, String],
     default: false,
   },
 });
@@ -74,7 +77,8 @@ const eyeIcon = computed(() => {
 });
 
 const toggleInputType = () => {
-  currentInputType.value = currentInputType.value === "password" ? "text" : "password";
+  currentInputType.value =
+    currentInputType.value === "password" ? "text" : "password";
 };
 
 const inputClasses = computed(() => {

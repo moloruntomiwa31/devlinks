@@ -17,14 +17,9 @@
           :inputType="field.type"
           :placeholder="field.placeholder"
           :eye="field.eye"
-          :errorMessage="field.error.length > 0"
+          :errorMessage="field.error"
           class="mb-4"
         />
-        <div class="mb-4">
-          <span v-for="error in errors" class="text-red-secondary">{{
-            error.error
-          }}</span>
-        </div>
         <BaseButton
           buttonText="Login"
           buttonColor="bg-purple-secondary"
@@ -65,17 +60,21 @@ const inputFields = ref([
   },
 ]);
 
-const errors = computed(() => inputFields.value.filter((field) => field.error));
+// const errors = computed(() => inputFields.value.filter((field) => field.error));
 
-const formInvalid = computed(() => {
-  watch(inputFields, () => {
-    return errors.value.length > 0;
-  });
+// const formInvalid = computed(() => {
+//   watch(inputFields, () => {
+//     return errors.value.length > 0;
+//   });
+// });
+
+const errorExists = computed(() => {
+  return inputFields.value.filter((field) => field.error.length > 1);
 });
 
 const handleLogIn = async () => {
   isLoggingIn.value = true;
-  // Clear previous errors
+  // // Clear previous errors
   inputFields.value.forEach((field) => (field.error = ""));
 
   // Validate email
@@ -85,7 +84,7 @@ const handleLogIn = async () => {
     return;
   }
 
-  // Validate password length
+  // // Validate password length
   const passwordField = inputFields.value.find(
     (field) => field.type === "password"
   );
@@ -94,9 +93,13 @@ const handleLogIn = async () => {
     return;
   }
 
-  await logIn(inputFields.value[0].value, inputFields.value[1].value);
-  isLoggingIn.value = false;
-  resetForm();
+  try {
+    await logIn(inputFields.value[0].value, inputFields.value[1].value);
+    isLoggingIn.value = false;
+    resetForm();
+  } catch (error) {
+    isLoggingIn.value = false;
+  }
 };
 
 const resetForm = () => {

@@ -9,37 +9,15 @@
         details="Let's get you started sharing your links!"
       />
       <Form class="mt-4" @submit="handleSignUp">
-        <BaseInput
-          v-model="emailAddress"
-          labelText="Email address"
-          inputType="email"
-          placeholder="e.g alex@gmail.com"
-          :errorMessage="errors.length > 0"
+        <BaseInput v-for="field in inputFields" :key="field.label"
+          v-model="field.value"
+          :labelText="field.label"
+          :inputType="field.type"
+          :placeholder="field.placeholder"
+          :eye="field.eye"
+          :errorMessage="field.error"
           class="mb-4"
         />
-        <BaseInput
-          v-model="password"
-          labelText="Create Password"
-          inputType="password"
-          placeholder="At least 8 characters"
-          :eye="true"
-          :errorMessage="errors.length > 0"
-          class="mb-4"
-        />
-        <BaseInput
-          v-model="confirmPassword"
-          labelText="Confirm Password"
-          inputType="password"
-          placeholder="At least 8 characters"
-          :eye="true"
-          :errorMessage="errors.length > 0"
-          class="mb-2"
-        />
-        <div class="mb-4">
-          <span v-for="error in errors" class="text-red-secondary"
-            >{{ error }}.
-          </span>
-        </div>
         <BaseButton
           buttonText="Create an account"
           buttonColor="bg-purple-secondary"
@@ -60,30 +38,70 @@
 <script setup lang="ts">
 const { signUp } = useAuth();
 const { sameAs, isValidEmail } = useValidations();
-const emailAddress = ref<string>("");
-const password = ref<string>("");
-const confirmPassword = ref<string>("");
-let errors = ref<any>([]);
 const isRegistering = ref(false);
+
+//inputFields
+const inputFields = ref([
+  {
+    label: "Email",
+    placeholder: "e.g example@gmail.com",
+    type: "email",
+    value: "",
+    error: "",
+  },
+  {
+    label: "Password",
+    placeholder: "At least 8 characters long",
+    type: "password",
+    eye: true,
+    value: "",
+    error: "",
+  },
+  {
+    label: "Confirm Password",
+    placeholder: "At least 8 characters long",
+    type: "password",
+    eye: true,
+    value: "",
+    error: "",
+  },
+]);
 //validations
 
 const handleSignUp = async () => {
   isRegistering.value = true;
-  //validations
-  if (!isValidEmail(emailAddress.value)) {
-    errors.value.push("Email field error");
-    return false;
-  } else if (!sameAs(password.value, confirmPassword.value)) {
-    errors.value.push("Passwords might not be the same, minimum length is 8");
+  // // Clear previous errors
+  inputFields.value.forEach((field) => (field.error = ""));
+
+  // Validate email
+  const emailField = inputFields.value.find((field) => field.type === "email");
+  if (!isValidEmail(emailField!.value)) {
+    emailField!.error = "Invalid email";
+    return;
+  }
+
+  // // Validate password length
+  const passwordField = inputFields.value.find(
+    (field) => field.type === "password"
+  );
+  if (passwordField!.value.length < 8) {
+    passwordField!.error = "Password must be at least 8 characters long";
+    return;
+  }else if (!sameAs(inputFields.value[1].value, inputFields.value[2].value)) {
+    passwordField!.error = "Passwords must be the same";
     return false;
   }
-  //setup
-  await signUp(emailAddress.value, password.value);
-  isRegistering.value = false;
-  emailAddress.value = "";
-  password.value = "";
-  confirmPassword.value = "";
-  errors.value = [];
+
+  try {
+    await signUp(inputFields.value[0].value, inputFields.value[1].value);
+    isRegistering.value = false;
+    resetForm();
+  } catch (error) {
+    isRegistering.value = false;
+  }
+};
+const resetForm = () => {
+  inputFields.value.forEach((field) => (field.value = ""));
 };
 </script>
 
