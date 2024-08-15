@@ -60,18 +60,6 @@ const inputFields = ref([
   },
 ]);
 
-// const errors = computed(() => inputFields.value.filter((field) => field.error));
-
-// const formInvalid = computed(() => {
-//   watch(inputFields, () => {
-//     return errors.value.length > 0;
-//   });
-// });
-
-const errorExists = computed(() => {
-  return inputFields.value.filter((field) => field.error.length > 1);
-});
-
 const handleLogIn = async () => {
   isLoggingIn.value = true;
   // // Clear previous errors

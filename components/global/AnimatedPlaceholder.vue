@@ -33,9 +33,4 @@ defineProps<{
   background-size: 200% 100%;
   animation: bgAnimate 1.2s linear infinite;
 }
-/* @media screen and (min-width: 768px) {
-  .placeholder {
-    min-height: 20rem;
-  }
-} */
 </style>
