@@ -4,7 +4,7 @@
       height="30px"
       :width="placeholderWidth"
       borderRadius="2px"
-      v-for="i in 2"
+      v-for="i in 5"
       class="mb-4"
       v-if="links.length < 1"
     />

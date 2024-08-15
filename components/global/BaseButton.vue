@@ -8,6 +8,7 @@
   >
     <Icon
       :name="rotate ? 'gg:spinner-two' : iconName"
+      :size="iconSize"
       :class="{ 'rotate': rotate }"
       v-if="rotate || iconName"
     />
@@ -22,6 +23,10 @@ defineProps({
   iconName: {
     type: String || Boolean,
     default: false || "",
+  },
+  iconSize: {
+    type: String,
+    default: "24px",
   },
   disabled: {
     type: Boolean,

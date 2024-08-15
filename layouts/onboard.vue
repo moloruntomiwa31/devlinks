@@ -35,6 +35,13 @@
             })
           "
         />
+        <BaseButton
+          iconName="ic:outline-logout"
+          iconSize="24px"
+          buttonColor="bg-white"
+          class="shadow w-10 h-10 ml-2 rounded-lg text-purple-secondary p-2 hover:bg-light-gray-secondary"
+          @click="signOutUser"
+        />
       </div>
     </div>
     <!-- BODY -->
@@ -42,9 +49,13 @@
       class="body w-full flex items-center justify-center gap-6 py-4 min-h-[88vh]"
     >
       <div class="relative w-2/5 bg-white rounded-lg h-[560px] hidden lg:block">
-        <img src="~/assets/images/phone-frame.png" alt="phone-frame" class="w-full h-full object-cover" />
+        <img
+          src="~/assets/images/phone-frame.png"
+          alt="phone-frame"
+          class="w-full h-full object-cover"
+        />
         <div
-          class="skeleton-loader flexCenter flex-col absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2  overflow-y-auto max-h-full"
+          class="skeleton-loader flexCenter flex-col absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-y-auto max-h-full"
         >
           <OnboardAvatar />
           <OnboardUserDetails />
@@ -59,6 +70,8 @@
 
 <script setup lang="ts">
 import type Link from "~/types/Link";
+import useAuth from "~/composables/useAuth";
+const { signOutUser } = useAuth();
 
 const router = useRouter();
 const links = ref<Link[]>([

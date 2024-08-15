@@ -3,7 +3,7 @@
     <label
       v-if="labelText"
       class="text-sm"
-      :for="labelText"
+      :for="labelText.toString()"
       :class="{ star: asterix }"
       >{{ labelText }}</label
     >
@@ -16,7 +16,7 @@
         ref="input"
         v-model="modelValue"
         :class="inputClasses"
-        :id="labelText"
+        :id="labelText.toString()"
         :style="{
           borderColor: errorMessage ? 'red' : '',
           boxShadow: errorMessage ? '0 0 4px rgba(255, 0, 0, 0.5)' : '',

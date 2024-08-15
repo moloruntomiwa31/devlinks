@@ -1,12 +1,13 @@
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
 } from "firebase/auth";
 import { getAuth } from "firebase/auth";
 import {app} from "~/firebaseInit";
 
 export default function useAuth() {
-  const { setUser } = useUser();
+  const { setUser, reset } = useUser();
   const { addToast } = useToast();
   const auth = getAuth(app);
 
@@ -41,6 +42,14 @@ export default function useAuth() {
       addToast("Error occured", "error");
     }
   };
+
+  const signOutUser = async () => {
+    await signOut(auth);
+    setUser(null);
+    reset();
+    addToast("Logged Out", "success");
+    navigateTo("/login");
+  }
     
-  return { logIn, signUp };
+  return { logIn, signUp, signOutUser };
 }

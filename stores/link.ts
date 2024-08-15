@@ -8,12 +8,13 @@ import {
   doc,
   onSnapshot,
 } from "firebase/firestore";
-import { onAuthStateChanged, getAuth } from 'firebase/auth';
-import { db, app } from "../firebaseInit"; 
+import { onAuthStateChanged, getAuth } from "firebase/auth";
+import { db, app } from "../firebaseInit";
 
 export const useDevLinks = defineStore("useDevLinks", () => {
   const links = ref<Devlink[]>([]);
   const { user } = storeToRefs(useUser());
+  const listenerSetUp = ref(false); 
 
   const auth = getAuth(app);
   const userLinksCollection = () =>
@@ -24,20 +25,18 @@ export const useDevLinks = defineStore("useDevLinks", () => {
     const querySnapshot = await getDocs(userLinksCollection());
     links.value = querySnapshot.docs.map((doc) => ({
       ...doc.data(),
-      id: doc.id
+      id: doc.id,
     })) as Devlink[];
   };
 
   const addLink = async (devlink: Devlink) => {
     if (!user.value) return;
-    const docRef = await addDoc(userLinksCollection(), devlink);
-    links.value.push({ ...devlink, id: docRef.id });
+    await addDoc(userLinksCollection(), devlink);
   };
   const removeLink = async (index: number) => {
     if (!user.value) return;
     const linkId = links.value[index].id;
     await deleteDoc(doc(db, `users/${user.value.uid}/links/${linkId}`));
-    links.value.splice(index, 1);
   };
   const updateLink = async (index: number, updatedLink: Devlink) => {
     if (!user.value) return;
@@ -45,7 +44,6 @@ export const useDevLinks = defineStore("useDevLinks", () => {
     await updateDoc(doc(db, `users/${user.value.uid}/links/${linkId}`), {
       ...updatedLink,
     });
-    links.value[index] = { ...updatedLink, id: linkId };
   };
 
   const updateLinkOrder = async (newOrder: Devlink[]) => {
@@ -57,7 +55,8 @@ export const useDevLinks = defineStore("useDevLinks", () => {
 
   // Set up real-time listener
   const setupRealtimeListener = () => {
-    if (!user.value) return;
+    if (!user.value || listenerSetUp.value) return;
+    listenerSetUp.value = true;
     onSnapshot(userLinksCollection(), (snapshot) => {
       links.value = snapshot.docs.map((doc) => ({
         ...doc.data(),
@@ -69,13 +68,11 @@ export const useDevLinks = defineStore("useDevLinks", () => {
   // Call the real-time listener setup function
   setupRealtimeListener();
 
-  onMounted(() => {
-    onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        user.value = currentUser;
-        fetchLinks();
-      }
-    });
+  onAuthStateChanged(auth, (currentUser) => {
+    if (currentUser) {
+      user.value = currentUser;
+      fetchLinks();
+    }
   });
 
   return {
